@@ -1,9 +1,9 @@
 # hetNSC
-Heteroscedastic and homoscedastic nearest shrunken centroid classifiers with hard, soft, and order thresholding
 
-# R-package-Heteroscedastic-and-homoscedastic-Shrunken-Centroid-Classifiers
+# Heteroscedastic and homoscedastic nearest shrunken centroid classifiers with hard, soft, and order thresholding
 
-# Package name: hetNSC
+
+# R Package name: hetNSC
 
 Heteroscedastic nearest shrunken centroid (NSC) classification for
 high-dimensional, low-sample-size data such as gene expression.
