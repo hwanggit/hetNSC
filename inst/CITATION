@@ -1,0 +1,21 @@
+bibentry(
+  bibtype = "Article",
+  title   = "Heteroscedastic nearest shrunken centroid classification: Methods and applications to high-dimensional data",
+  author  = c(person("Mohammad Omar", "Sahtout"), person("Haiyan", "Wang")),
+  journal = "Statistical Applications in Genetics and Molecular Biology",
+  year    = "2026",
+  note    = "Accepted",
+  textVersion = paste("Sahtout, M. O. and Wang, H. (2026).",
+    "Heteroscedastic nearest shrunken centroid classification: Methods and",
+    "applications to high-dimensional data.",
+    "Statistical Applications in Genetics and Molecular Biology (accepted).")
+)
+bibentry(
+  bibtype = "Article",
+  title   = "Different thresholding methods on nearest shrunken centroid algorithm",
+  author  = c(person("Mohammad Omar", "Sahtout"), person("Haiyan", "Wang"),
+              person("S.", "Ghimire")),
+  journal = "Communications in Statistics - Simulation and Computation",
+  year    = "2024", volume = "53", number = "3", pages = "1444--1460",
+  doi     = "10.1080/03610918.2022.2047201"
+)

@@ -1,0 +1,109 @@
+---
+title: "Getting started with hetNSC"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with hetNSC}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+`hetNSC` implements six nearest shrunken centroid (NSC) classifiers for
+high-dimensional, low-sample-size data:
+
+```{r}
+library(hetNSC)
+hnsc_methods()[, c("label", "method", "variance")]
+```
+
+* **STh** is the original PAM classifier (Tibshirani et al. 2002): the
+  pooled-variance (homoscedastic) test statistic with soft thresholding.
+* **HTh, OTh** are the homoscedastic classifiers of Sahtout, Wang and
+  Ghimire (2024), which use the same pooled-variance statistic with hard or
+  order thresholding.
+* **STh3, HTh3, OTh3** use the heteroscedastic statistic and discriminant
+  function of Sahtout and Wang, which estimate a separate variance for every
+  gene in every class.
+
+## Data layout
+
+As in **pamr**, expression matrices have **genes in rows and samples in
+columns**, and `y` has one label per column.
+
+```{r}
+set.seed(8900)
+dat <- simulate_hetero_data(ntr1 = 15, ntr2 = 20, nte1 = 50, nte2 = 50,
+                            p = 1000, a = 14)
+dim(dat$xtr)
+table(dat$ytr)
+```
+
+`simulate_hetero_data()` generates the correlated-gene designs of the paper's
+simulation study: 20 informative genes with class-B means `a/10 * i`, gene
+standard deviations cycling through 1, ..., 20, and correlated informative
+genes in class B only (`correlated = "B"`, the default, heteroscedastic) or in
+both classes (`correlated = "both"`, homoscedastic). See
+`?simulate_hetero_data` for the exact covariance matrix.
+
+## Fit and predict
+
+`hnsc()` chooses the threshold by refined cross-validation and fits the
+classifier at that threshold. Choose the classifier with a paper label or
+with `method` and `variance`.
+
+```{r}
+set.seed(1)
+fit <- hnsc(dat$xtr, dat$ytr, method = "HTh3")
+fit
+
+pred <- predict(fit, dat$xte)
+mean(pred != dat$yte)                      # test error
+head(predict(fit, dat$xte, type = "posterior"))
+head(fit$selected.genes)                    # genes used by the classifier
+```
+
+The homoscedastic counterpart is fitted the same way:
+
+```{r}
+set.seed(1)
+fit0 <- hnsc(dat$xtr, dat$ytr, method = "hard", variance = "homo")
+mean(predict(fit0, dat$xte) != dat$yte)
+```
+
+## Step by step
+
+`hnsc_train()` fits a grid of thresholds, `hnsc_cv()` cross-validates it,
+and `hnsc_select()` runs the full refined search used by `hnsc()`.
+
+```{r}
+tr <- hnsc_train(dat$xtr, dat$ytr, method = "OTh3")
+set.seed(2)
+cv <- hnsc_cv(tr, dat$xtr, dat$ytr)
+head(data.frame(threshold = cv$threshold, genes = cv$size, cv.error = cv$error))
+
+set.seed(2)
+sel <- hnsc_select(dat$xtr, dat$ytr, method = "OTh3")
+sel
+```
+
+For order thresholding the threshold is the number of largest |d_ik| values
+kept; for soft and hard thresholding it is a cut-off on |d_ik|.
+
+## Repeated-run comparison
+
+`compare_nsc()` runs the evaluation protocol of the paper (100 runs with
+different cross-validation folds in the paper; 2 here to keep the vignette
+fast) and reports test error, balanced accuracy and the number of genes.
+
+```{r}
+res <- compare_nsc(dat$xtr, dat$ytr, dat$xte, dat$yte, n.runs = 2,
+                   thresholding = c("hard", "order"), verbose = FALSE)
+res
+recall_table(res)
+```
+
+The script `system.file("scripts", "simulation_correlated.R", package = "hetNSC")`
+contains the full correlated-gene simulation studies.

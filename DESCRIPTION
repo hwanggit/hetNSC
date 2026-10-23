@@ -1,0 +1,41 @@
+Package: hetNSC
+Type: Package
+Title: Heteroscedastic Nearest Shrunken Centroid Classification
+Version: 0.1.0
+Authors@R: c(
+    person("Haiyan", "Wang", email = "hwang@ksu.edu", role = c("aut", "cre")),
+    person("Mohammad Omar", "Sahtout", role = "aut"),
+    person("Trevor", "Hastie", role = "ctb",
+           comment = "Author of the 'pamr' code this package is derived from"),
+    person("Robert", "Tibshirani", role = "ctb",
+           comment = "Author of the 'pamr' code this package is derived from"),
+    person("Balasubramanian", "Narasimhan", role = "ctb",
+           comment = "Author of the 'pamr' code this package is derived from"),
+    person("Gilbert", "Chu", role = "ctb",
+           comment = "Author of the 'pamr' code this package is derived from"))
+Description: Nearest shrunken centroid (NSC) classifiers for high-dimensional,
+    low-sample-size data such as gene expression. Implements the original
+    homoscedastic NSC with soft thresholding (Prediction Analysis of
+    Microarrays; Tibshirani et al. 2002 <doi:10.1073/pnas.082099299>), its
+    hard- and order-thresholding versions (Sahtout, Wang and Ghimire 2024
+    <doi:10.1080/03610918.2022.2047201>), and
+    the heteroscedastic extension of Sahtout and Wang that uses class-specific
+    variances in both the test statistic and the discriminant function
+    (methods STh3, HTh3 and OTh3). The thresholding parameter is selected by a
+    refined ("deep") cross-validation search. Also provides the simulation
+    design, per-class performance metrics and the relative-heterogeneity
+    diagnostic used in the paper.
+License: GPL-2
+Encoding: UTF-8
+Depends: R (>= 3.5.0)
+Imports:
+    MASS,
+    stats
+Suggests:
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown,
+    pamr
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+RoxygenNote: 7.3.1
